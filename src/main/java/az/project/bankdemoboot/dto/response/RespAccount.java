@@ -6,10 +6,11 @@ import lombok.Data;
 @Data
 @Builder
 public class RespAccount {
-    private Long id;
+    private Long accountId;
     private String name;
     private String accountNo;
     private String currency;
     private String iban;
     private Integer branchCode;
+    private RespCustomer respCustomer;
 }

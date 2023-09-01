@@ -11,5 +11,5 @@ public interface AccountService {
 
     Response createAccount(ReqAccount reqAccount);
 
-    Response updateAccount(ReqAccount reqAccount);
+    Response deleteAccount(Long accountId);
 }

@@ -26,8 +26,8 @@ public class AccountController {
         return accountservice.createAccount(reqAccount);
     }
 
-    @PutMapping("/UpdateAccount")
-    public Response updateAccount(@RequestBody ReqAccount reqAccount){
-        return accountservice.updateAccount(reqAccount);
+    @PutMapping("/DeleteAccount/{accountId}")
+    public Response deleteAccount(@PathVariable Long accountId){
+        return accountservice.deleteAccount(accountId);
     }
 }

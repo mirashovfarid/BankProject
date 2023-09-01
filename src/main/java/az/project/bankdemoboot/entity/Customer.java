@@ -28,10 +28,12 @@ public class Customer {
     @NotNull
     private String surname;
     private String address;
+    @NotNull
     private String pin;
     private String seria;
     private Date dob;
     private String phone;
+    @NotNull
     private String cif;
     @CreationTimestamp
     private Date dataDate;

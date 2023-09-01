@@ -12,11 +12,9 @@ import az.project.bankdemoboot.exception.ExceptionConstants;
 import az.project.bankdemoboot.repository.AccountRepository;
 import az.project.bankdemoboot.repository.CustomerRepository;
 import az.project.bankdemoboot.service.AccountService;
-import com.sun.org.apache.bcel.internal.ExceptionConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,7 +81,6 @@ public class AccountServiceImpl implements AccountService {
                     .branchCode(branchCode)
                     .build();
             accountRepository.save(account);
-
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (BankException ex){
             response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
@@ -96,22 +93,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Response updateAccount(ReqAccount reqAccount) {
+    public Response deleteAccount(Long accountId) {
         Response response = new Response();
-        try {
-            String name = reqAccount.getName();
-            String accountNo = reqAccount.getAccountNo();
-            String currency = reqAccount.getCurrency();
-            String iban = reqAccount.getIban();
-            Integer branchCode = reqAccount.getBranchCode();
-            Long customerId = reqAccount.getCustomerId();
-            if (name == null || accountNo == null || currency == null || iban == null || branchCode == null){
+       try {
+            if (accountId == null){
                 throw new BankException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data !");
             }
-            Customer customer = customerRepository.getCustomerByIdAndActive(customerId, EnumAvailableStatus.ACTIVE.value);
-            if (customer == null){
-                throw new BankException(ExceptionConstants.CUSTOMER_NOT_FOUND, "Customer not found !");
+            Account account = accountRepository.getAccountByIdAndActive(accountId, EnumAvailableStatus.ACTIVE.value);
+            if (account == null){
+                throw new BankException(ExceptionConstants.ACCOUNT_NOT_FOUND, "Account not found !");
             }
+            account.setActive(EnumAvailableStatus.DEACTIVE.value);
+            accountRepository.save(account);
+            response.setStatus(RespStatus.getSuccessMessage());
         }catch (BankException ex){
             response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
             ex.printStackTrace();
@@ -126,7 +120,7 @@ public class AccountServiceImpl implements AccountService {
         RespAccount respAccount = RespAccount.builder().
                 accountNo(account.getAccountNo()).
                 name(account.getName()).
-                id(account.getId()).
+                accountId(account.getId()).
                 iban(account.getIban()).
                 currency(account.getCurrency()).
                 branchCode(account.getBranchCode())

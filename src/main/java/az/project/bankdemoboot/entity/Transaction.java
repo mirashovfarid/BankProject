@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -22,14 +23,13 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "dt_account_id")
     private Account dtAccount;
     private String crAccount;
     private Double amount;
+    private Double commission;
     private String currency;
     @CreationTimestamp
     private Date trDate;
