@@ -6,4 +6,5 @@ final public class ExceptionConstants {
     final static public Integer CUSTOMER_NOT_FOUND = 102;
     public static final Integer ACCOUNT_NOT_FOUND = 103;
     public static final Integer TRANSACTION_NOT_FOUND = 104;
+    public static final Integer USER_NOT_FOUND = 107;
 }
