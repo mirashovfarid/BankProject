@@ -66,7 +66,40 @@ public class    TransactionServiceImpl implements TransactionService {
 
     @Override
     public Response createOperation(ReqTransaction reqTransaction) {
-        return null;
+        Response response = new Response();
+        try {
+             Long dtAccountId = reqTransaction.getDtAccountId();
+             String crAccount = reqTransaction.getCrAccount();
+             Double amount = reqTransaction.getAmount();
+             Double commission = reqTransaction.getCommission();
+             String currency = reqTransaction.getCurrency();
+             if (dtAccountId == null || crAccount == null || amount == null ||
+                     commission == null || currency == null){
+                 throw new BankException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data !");
+             }
+             Account dtAccount = accountRepository.findAccountByIdAndActive(dtAccountId, EnumAvailableStatus.ACTIVE.value);
+             if (dtAccount == null){
+                 throw new BankException(ExceptionConstants.DEBIT_ACCOUNT_NOT_FOUND, "Debit account not found !");
+             }
+             Transaction transaction = Transaction.builder().
+                     dtAccount(dtAccount).
+                     crAccount(crAccount).
+                     amount(amount).
+                     commission(commission).
+                     currency(currency).
+                     build();
+
+             transactionRepository.save(transaction);
+             response.setStatus(RespStatus.getSuccessMessage());
+
+        }catch (BankException ex){
+            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
+            ex.printStackTrace();
+        }catch (Exception ex){
+            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception !"));
+            ex.printStackTrace();
+        }
+        return response;
     }
 
     public RespTransaction mapping(Transaction transaction){
