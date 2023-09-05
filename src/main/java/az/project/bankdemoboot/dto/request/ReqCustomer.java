@@ -1,5 +1,6 @@
 package az.project.bankdemoboot.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -17,4 +18,6 @@ public class ReqCustomer {
     private Date dob;
     private String phone;
     private String cif;
+    @JsonProperty(value = "token")
+    private ReqToken reqToken; // after add for check token
 }
