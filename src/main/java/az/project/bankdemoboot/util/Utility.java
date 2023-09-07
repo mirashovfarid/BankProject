@@ -17,7 +17,7 @@ public class Utility {
 
     private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
-    public void checkToken(ReqToken reqToken){
+    public UserToken checkToken(ReqToken reqToken){
         Long userId = reqToken.getUserId();
         String token = reqToken.getToken();
         if (userId == null || token == null){
@@ -31,5 +31,6 @@ public class Utility {
         if (userToken == null){
             throw new BankException(ExceptionConstants.INVALID_TOKEN, "Invalid token !");
         }
+        return userToken;
     }
 }
