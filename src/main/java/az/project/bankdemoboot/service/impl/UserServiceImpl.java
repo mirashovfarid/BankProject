@@ -14,6 +14,7 @@ import az.project.bankdemoboot.exception.ExceptionConstants;
 import az.project.bankdemoboot.repository.UserRepository;
 import az.project.bankdemoboot.repository.UserTokenRepository;
 import az.project.bankdemoboot.service.UserService;
+import az.project.bankdemoboot.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
+    private final Utility utility;
     @Override
     public Response<RespUser> login(ReqLogin reqLogin) {
         Response<RespUser> response = new Response<>();
@@ -63,7 +65,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response logout(ReqToken reqToken) {
-        return null;
+        Response response = new Response();
+        try {
+            UserToken userToken = utility.checkToken(reqToken);
+            userToken.setActive(EnumAvailableStatus.DEACTIVE.value);
+            userTokenRepository.save(userToken);
+            response.setStatus(RespStatus.getSuccessMessage());
+
+        }catch (BankException ex){
+            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
+            ex.printStackTrace();
+        }catch (Exception ex){
+            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception !"));
+            ex.printStackTrace();
+        }
+
+        return response;
     }
 
 }

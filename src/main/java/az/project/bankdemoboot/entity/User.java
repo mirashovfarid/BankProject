@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "login_company")
+@Table(name = "user")
 @DynamicInsert
 @Builder
 @NoArgsConstructor
@@ -23,7 +23,6 @@ public class User {
     private String username;
     private String password;
     private String fullName;
-    private String token;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

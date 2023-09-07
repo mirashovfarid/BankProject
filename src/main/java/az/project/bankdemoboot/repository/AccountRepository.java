@@ -13,4 +13,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findAllByCustomerAndActive(Customer customer, Integer active);
 
     Account getAccountByIdAndActive(Long accountId, Integer active);
+
+    Account findAccountByIdAndActive(Long dtAccountId, Integer active);
 }

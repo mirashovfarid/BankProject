@@ -1,15 +1,21 @@
 package az.project.bankdemoboot.service.impl;
 
 import az.project.bankdemoboot.dto.request.ReqCustomer;
+import az.project.bankdemoboot.dto.request.ReqToken;
 import az.project.bankdemoboot.dto.response.RespCustomer;
 import az.project.bankdemoboot.dto.response.RespStatus;
 import az.project.bankdemoboot.dto.response.Response;
 import az.project.bankdemoboot.entity.Customer;
+import az.project.bankdemoboot.entity.User;
+import az.project.bankdemoboot.entity.UserToken;
 import az.project.bankdemoboot.enums.EnumAvailableStatus;
 import az.project.bankdemoboot.exception.BankException;
 import az.project.bankdemoboot.exception.ExceptionConstants;
 import az.project.bankdemoboot.repository.CustomerRepository;
+import az.project.bankdemoboot.repository.UserRepository;
+import az.project.bankdemoboot.repository.UserTokenRepository;
 import az.project.bankdemoboot.service.CustomerService;
+import az.project.bankdemoboot.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +28,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
 
+    private final Utility utility;
+
     @Override
-    public Response<List<RespCustomer>> getCustomerList() {
+    public Response<List<RespCustomer>> getCustomerList(ReqToken reqToken) {
         Response<List<RespCustomer>> response = new Response<>();
         try{
+            utility.checkToken(reqToken);
             List<Customer> customerList = customerRepository.findAllByActive(EnumAvailableStatus.ACTIVE.value);
             if (customerList.isEmpty()){
                 throw new BankException(ExceptionConstants.CUSTOMER_NOT_FOUND,"Customer not found!");
@@ -45,8 +54,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Response<RespCustomer> getCustomerById(Long customerId) {
+    public Response<RespCustomer> getCustomerById(ReqCustomer reqCustomer) {
         Response<RespCustomer> response = new Response<>();
+        Long customerId = reqCustomer.getCustomerId();
+        utility.checkToken(reqCustomer.getReqToken());
         try{
             if (customerId == null){
                 throw new BankException(ExceptionConstants.INVALID_REQUEST_DATA,"Invalid request data!");
@@ -72,6 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Response addCustomer(ReqCustomer reqCustomer) {
         Response response = new Response();
+        utility.checkToken(reqCustomer.getReqToken());
         try {
             String name = reqCustomer.getName();
             String surname = reqCustomer.getSurname();
@@ -103,6 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Response updateCustomer(ReqCustomer reqCustomer) {
         Response response = new Response();
+        utility.checkToken(reqCustomer.getReqToken());
         try {
             String name = reqCustomer.getName();
             String surname = reqCustomer.getSurname();
@@ -135,8 +148,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Response deleteCustomer(Long customerId) {
+    public Response deleteCustomer(ReqCustomer reqCustomer) {
         Response response = new Response();
+        Long customerId = reqCustomer.getCustomerId();
+        utility.checkToken(reqCustomer.getReqToken());
         try {
             if (customerId == null){
                 throw new BankException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data !");

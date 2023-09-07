@@ -1,6 +1,8 @@
 package az.project.bankdemoboot.controller;
 
 import az.project.bankdemoboot.dto.request.ReqCustomer;
+import az.project.bankdemoboot.dto.request.ReqToken;
+import az.project.bankdemoboot.dto.request.ReqTransaction;
 import az.project.bankdemoboot.dto.response.RespCustomer;
 import az.project.bankdemoboot.dto.response.Response;
 import az.project.bankdemoboot.service.CustomerService;
@@ -16,14 +18,14 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @GetMapping("/getCustomerList")
-    public Response<List<RespCustomer>> getCustomerList(){
-        return customerService.getCustomerList();
+    @PostMapping("/getCustomerList")
+    public Response<List<RespCustomer>> getCustomerList(@RequestBody ReqToken reqToken){
+        return customerService.getCustomerList(reqToken);
     }
 
-    @GetMapping("/getCustomerById")
-    public Response<RespCustomer> getCustomerById(@RequestParam Long customerId){
-        return customerService.getCustomerById(customerId);
+    @PostMapping("/getCustomerById")
+    public Response<RespCustomer> getCustomerById(@RequestBody ReqCustomer reqCustomer){
+        return customerService.getCustomerById(reqCustomer);
     }
 
     @PostMapping("/addCustomer")
@@ -36,8 +38,8 @@ public class CustomerController {
         return customerService.updateCustomer(reqCustomer);
     }
 
-    @PutMapping("/DeleteCustomer/{customerId}")
-    public Response deleteCustomer(@PathVariable Long customerId){
-        return customerService.deleteCustomer(customerId);
+    @PutMapping("/DeleteCustomer")
+    public Response deleteCustomer(@RequestBody ReqCustomer reqCustomer){
+        return customerService.deleteCustomer(reqCustomer);
     }
 }
